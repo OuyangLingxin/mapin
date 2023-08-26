@@ -1,0 +1,14 @@
+{% extends 'base.html'%}
+{% block title%} Sign Up Here {% endblock %}
+{% block body %}
+  <h1>Welcome to Mapin</h1>
+  <form action="/signup" method="POST">
+    Email: <input type="email" name="email" id="email">
+    <br>
+    Password: <input type="password" name="password" id="password">
+    <br>
+    Comfirm Password: <input type="password" name="password2" id="password2">
+    <br>
+    <button type="submit">Create Account</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} Mapin {% endblock %}
+{%block body %}
+  <h1>Welcome to Mapin</h1>
+  <p>See how easy everything can be</p>
+
+  <form action="/" method="post">
+    <p>Sign in</p>
+
+    <label for="username">
+      <input type="text" name="email" id="email" placeholder="Email">
+    </label>
+    <br/>
+    <label for="password">
+      <input type="password" name="password" id="password" placeholder="Password">
+    </label>
+    <br/>
+    <button>Login</button>
+  </form>
+    <p>___________ or ___________ </p>
+
+    <form action="/signup">
+      <button type="submit">Sign Up</button>
+    </form>
+{% endblock %}
