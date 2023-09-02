@@ -1,88 +1,107 @@
 {% extends 'base.html' %}
 {% block title %} Mapping {% endblock %}
+
+{% block head%}
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+{% endblock%}
+
 {% block body %}
+  <h1>Driver Locations</h1>
 
-<h1>Driver Locations</h1>
-<section class="map">
-  <div id="map"></div>
-</section>
+  <section class="map">
+    <div id="map"></div>
+  </section>
 
+  <div id="grid"></div>
 
-<script>
-  const warehouses = [
-    {
-      "employee_id": 1,
-      "order_id": 1,
-      "warehouse_name": "Griffth",
-      "warehouse_location": "2800 E Observatory Ave, Los Angeles, CA 90027",
-      "coord": {"lat": 34.118378, "lng": -118.300352}
-    },
-    {
-      "employee_id": 2,
-      "order_id": 2,
-      "warehouse_name": "Urban Light",
-      "warehouse_location": "5905 Wilshire Blvd, Los Angeles, CA 90036",
-      "coord": {"lat": 34.064251, "lng": -118.360565}
-    }
-  ]
+  <script>
+    const warehouses = [
+      {
+        // "employee_id": 1,
+        // "order_id": 1
+        "warehouse_name": "Griffth",
+        "warehouse_location": "2800 E Observatory Ave, Los Angeles, CA 90027",
+        "coord": {"lat": 34.118378, "lng": -118.300352}
+      },
+      {
+        // "employee_id": 2,
+        // "order_id": [10,11,12,13,14,15,16,17,18],
+        "warehouse_name": "Urban Light",
+        "warehouse_location": "5905 Wilshire Blvd, Los Angeles, CA 90036",
+        "coord": {"lat": 34.064251, "lng": -118.360565}
+      },
+      {
+        // "employee_id": 3,
+        // "order_id": [19,20,21,22,23,24,25,26,27],
+        "warehouse_name": "Sacramento Zoo",
+        "warehouse_location": "3930 W Land Park Dr, Sacramento, CA 95822",
+        "coord": {"lat": 38.540180, "lng": -121.500038}
+      },
+      {
+        "warehouse_name": "Willow Park",
+        "warehouse_location": "1320 Willow St, San Jose, CA 95125",
+        "coord": {"lat": 37.304850, "lng": -121.908920}
+      }
+    ]
 
-  async function initMap() {
-    const { Map, InfoWindow } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-    const infoWindow = new InfoWindow();
+    async function initMap() {
+      const { Map, InfoWindow } = await google.maps.importLibrary("maps");
+      const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+      const infoWindow = new InfoWindow();
 
-    // Map and its center
-    const la = {lat:34.052235, lng:-118.243683};
-    const map = new google.maps.Map(
-      document.querySelector('#map'), {zoom:10, center:la}
-    );
+      // Map and its center
+      const la = {lat:34.052235, lng:-118.243683};
+      const map = new google.maps.Map(
+      document.querySelector('#map'), {zoom:10, center:la, mapId:'79bbee021714810b'}
+      );
 
-    //Create Markers
-    //Center LA Marker
-    let laMarker = new google.maps.Marker({position:la, map:map});
-    laMarker.addListener("click", () => {
-      infoWindow.open({
-        anchor: laMarker,
-        map,
+      //Create Markers
+      //Center LA Marker
+      let laMarker = new google.maps.Marker({position:la, map:map});
+      laMarker.addListener("click", () => {
+        infoWindow.open({
+          anchor: laMarker,
+          map,
+        });
+        infoWindow.setContent("You are in LA!")
       });
-      infoWindow.setContent("You are in LA!")
-    });
-    //Warehouses Marker
-    for (let warehouse of warehouses){
-      let location = warehouse["coord"];
-      let warehouseMarker = new google.maps.Marker({position: location, map:map, icon:{url:'/static/img/R.svg', scaledSize: {width: 30, height: 30,}}})
-      warehouseMarker.addListener("click", () => {
-      infoWindow.open({
-        anchor: warehouseMarker,
-        map,
-      });
-      infoWindow.setContent("I'm a warehouse")
-    });
-    }
-    //Driver Marker
-    fetch('/map')
-      .then((response) => response.json())
-      .then((responseData) => {
-        for(let i=0; i<responseData.length; i++){
-          let driverMarker = new google.maps.Marker({position: responseData[i], map:map, icon:{url:'/static/img/R.svg', scaledSize: {width: 30, height: 30,}}})
-          driverMarker.addListener("click", () => {
-            infoWindow.open({
-              anchor: driverMarker,
-              map,
-            });
-            infoWindow.setContent("I'm a driver")
+      //Warehouses Marker
+      for (let warehouse of warehouses){
+        let location = warehouse["coord"];
+        let warehouseMarker = new google.maps.Marker({position: location, map:map, icon:{url:'/static/img/warehouse.svg', scaledSize: {width: 50, height: 50,}}})
+        warehouseMarker.addListener("click", () => {
+          infoWindow.open({
+            anchor: warehouseMarker,
+            map,
           });
-        }
-      })
+        infoWindow.setContent(`${warehouse['warehouse_name']} Warehouse`)
+        });
+      }
+      //Driver Marker
+      fetch('/map')
+        .then((response) => response.json())
+        .then((responseData) => {
+          for(let i=0; i<responseData[1].length; i++){
+            let driverMarker = new google.maps.Marker({position: responseData[1][i], map:map, icon:{url:'/static/img/truck.svg', scaledSize: {width: 30, height: 30,}}})
+            driverMarker.addListener("click", ({ domEvent, latLng }) => {
+              const { target } = domEvent;
+              infoWindow.close();
+              for(let j=0; j<responseData[0].length; j++){
+                  if(responseData[0][j].id == responseData[1][i].id){
+                    infoWindow.setContent(`Name: ${responseData[0][j].name} <br/> Cell: ${responseData[0][j].cell}`);
+                    infoWindow.open(driverMarker.map, driverMarker);
+                  }
+              }
+            });
+          }
+        })
+    }
+  </script>
 
 
+<script type="text/jsx" src="/static/js/emp.jsx"></script>
+<script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABVLqKXuX8k_JDyL9dWR7jIZxs_XV9fhg&callback=initMap"></script>
 
-  }
-
-</script>
-
-<!-- <script src="/static/js/map.js"></script> -->
-<script
-  async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABVLqKXuX8k_JDyL9dWR7jIZxs_XV9fhg&callback=initMap">
-</script>
 {% endblock %}

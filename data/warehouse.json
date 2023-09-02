@@ -1,0 +1,16 @@
+[
+  {
+    "employee_id": 1,
+    "order_id": 1,
+    "warehouse_name": "Griffth",
+    "warehouse_location": "2800 E Observatory Ave, Los Angeles, CA 90027",
+    "coord": {"lat": 34.118378, "lng": -118.300352}
+  },
+  {
+    "employee_id": 2,
+    "order_id": 2,
+    "warehouse_name": "Urban Light",
+    "warehouse_location": "5905 Wilshire Blvd, Los Angeles, CA 90036",
+    "coord": {"lat": 34.064251, "lng": -118.360565}
+  }
+]

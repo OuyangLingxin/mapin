@@ -6,7 +6,7 @@ class Employee(db.Model):
     __tablename__ = 'employees'
     employee_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     employee_email = db.Column(db.String)
-    employee_password = db.Column(db.String)
+    employee_password = db.Column(db.String, nullable=True)
     employee_name = db.Column(db.String)
     employee_cell = db.Column(db.String)
 

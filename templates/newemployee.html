@@ -1,0 +1,19 @@
+{% extends 'base.html'%}
+{% block title %} Add new emp {% endblock %}
+{% block body %}
+
+<form action="/newemployee" method="POST">
+  <p>Add a new Employee</p>
+  Name: <input type="text" name="name" id="name" required>
+  <br>
+  Cell: <input type="tel" name="cell" id="cell" pattern="\([0-9]{3}\)-[0-9]{3}-[0-9]{4}" placeholder="(123)-456-7890" required>
+  <br>
+  Email: <input type="email" name="email" id="email">
+  <br>
+  Address: <input type="text" name="address" id="address" required>
+  <br>
+  <input type="submit">
+</form>
+
+
+{% endblock%}

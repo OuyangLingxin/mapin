@@ -1,0 +1,17 @@
+[
+  {
+    "order_status": "In Progress",
+    "employee_id": 2,
+    "warehouse_id": 1
+  },
+  {
+    "order_status": "Complete",
+    "employee_id": 1,
+    "warehouse_id": 1
+  },
+  {
+    "order_status": "Complete",
+    "employee_id": 2,
+    "warehouse_id": 2
+  }
+]

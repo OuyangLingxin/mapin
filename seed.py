@@ -11,7 +11,7 @@ os.system("createdb mapin")
 model.connect_to_db(server.app)
 model.db.create_all()
 
-userList = RandomUser.generate_users(3, {'nat':'us'})
+userList = RandomUser.generate_users(30, {'nat':'us'})
 
 with open('data/order.json') as o:
     order_data = json.loads(o.read())
@@ -59,13 +59,10 @@ for warehouse in warehouse_data:
 
 
 model.db.session.add_all(users)
-model.db.session.commit()
 
 model.db.session.add_all(addresses)
-model.db.session.commit()
 
 model.db.session.add_all(orders)
-model.db.session.commit()
 
 model.db.session.add_all(warehouses)
 model.db.session.commit()
