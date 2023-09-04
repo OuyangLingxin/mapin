@@ -2,6 +2,15 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+class Admin(db.Model):
+    __tablename__ = 'admins'
+    admin_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    admin_email = db.Column(db.String)
+    admin_password = db.Column(db.String, nullable=False)
+
+    def __repr__(self):
+        return f"<Admin admin_id={self.admin_id} admin_email={self.admin_email}>"
+
 class Employee(db.Model):
     __tablename__ = 'employees'
     employee_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -9,10 +18,11 @@ class Employee(db.Model):
     employee_password = db.Column(db.String, nullable=True)
     employee_name = db.Column(db.String)
     employee_cell = db.Column(db.String)
+    employee_total_packages_delivered = db.Column(db.Integer)
 
     address = db.relationship('Address', back_populates='employee')
     order = db.relationship('Order', back_populates='employee')
-    warehouse = db.relationship('Warehouse', back_populates='employee')
+    # warehouse = db.relationship('Warehouse', back_populates='employee')
 
     def __repr__(self):
         return f"<Employee employee_id={self.employee_id} employee_name={self.employee_name}>"
@@ -44,35 +54,18 @@ class Order(db.Model):
 class Warehouse(db.Model):
     __tablename__ = 'warehouses'
     warehouse_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.employee_id'))
+    warehouse_name = db.Column(db.String)
+    # employee_id = db.Column(db.Integer, db.ForeignKey('employees.employee_id'))
     order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'))
     warehouse_location = db.Column(db.String)
-    lat = db.Column(db.Float)
-    lng = db.Column(db.Float)
+    warehouse_lat = db.Column(db.Float)
+    warehouse_lng = db.Column(db.Float)
 
-    employee = db.relationship('Employee', back_populates='warehouse')
+    # employee = db.relationship('Employee', back_populates='warehouse')
     order = db.relationship('Order', back_populates='warehouse')
 
     def __repr__(self):
         return f"<Warehouse warehouse_id={self.warehouse_id} warehouse_location={self.warehouse_location}>"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -5,13 +5,14 @@ from datetime import datetime
 from randomuser import RandomUser
 import random_address
 import json
+from random import randint
 
 os.system("dropdb mapin")
 os.system("createdb mapin")
 model.connect_to_db(server.app)
 model.db.create_all()
 
-userList = RandomUser.generate_users(30, {'nat':'us'})
+userList = RandomUser.generate_users(10, {'nat':'us'})
 
 with open('data/order.json') as o:
     order_data = json.loads(o.read())
@@ -22,12 +23,15 @@ with open('data/warehouse.json') as w:
 users = []
 addresses = []
 
+orders_delivered = randint(100, 500)
+
 for user in userList:
     name = user.get_full_name()
     cell = user.get_cell()
     email = user.get_email()
     password = user.get_password()
-    newUser = model.Employee(employee_name = name, employee_cell = cell, employee_email=email, employee_password=password)
+    orders_delivered = orders_delivered
+    newUser = model.Employee(employee_name = name, employee_cell = cell, employee_email=email, employee_password=password, employee_total_packages_delivered=orders_delivered)
     users.append(newUser)
 
     coordinates = random_address.real_random_address_by_state('CA')
@@ -46,10 +50,11 @@ for order in order_data:
 
 warehouses = []
 for warehouse in warehouse_data:
-    employee_id = warehouse["employee_id"]
-    order_id = warehouse["order_id"]
+    warehouse_name = warehouse['warehouse_name']
     warehouse_location = warehouse["warehouse_location"]
-    warehouse = model.Warehouse(employee_id=employee_id, order_id=order_id, warehouse_location=warehouse_location)
+    warehouse_lat = warehouse['coord']['lat']
+    warehouse_lng = warehouse['coord']['lng']
+    warehouse = model.Warehouse(warehouse_name=warehouse_name, warehouse_location=warehouse_location, warehouse_lat=warehouse_lat, warehouse_lng=warehouse_lng)
     warehouses.append(warehouse)
 
 
@@ -58,12 +63,13 @@ for warehouse in warehouse_data:
 
 
 
+
 model.db.session.add_all(users)
-
+# model.db.session.commit()
 model.db.session.add_all(addresses)
-
+# model.db.session.commit()
 model.db.session.add_all(orders)
-
+# model.db.session.commit()
 model.db.session.add_all(warehouses)
 model.db.session.commit()
 

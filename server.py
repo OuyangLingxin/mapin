@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, session, flash, redirect, jsonify
-from model import connect_to_db, db, Employee, Order, Warehouse, Address
+from model import connect_to_db, db, Employee, Order, Warehouse, Address, Admin
 from jinja2 import StrictUndefined
 import googlemaps
+from random import randint
 
 app = Flask(__name__)
 app.secret_key = 'dev'
@@ -17,13 +18,12 @@ def home():
 @app.route('/', methods=["POST"])
 def login():
   email = request.form.get('email')
-  user = Employee.query.filter(Employee.employee_email == email).first()
+  user = Admin.query.filter(Admin.admin_email == email).first()
   if user is None:
     flash('Try again')
     return redirect('/')
   else:
-    flash("Logged In")
-    return render_template('welcome.html')
+    return redirect('/maps')
 
 @app.route('/signup')
 def signup():
@@ -33,7 +33,7 @@ def signup():
 def create_account():
   email = request.form.get('email')
   password = request.form.get('password')
-  admin = Employee(employee_email = email, employee_password = password)
+  admin = Admin(admin_email = email, admin_password = password)
   db.session.add(admin)
   db.session.commit()
   return redirect('/')
@@ -41,8 +41,6 @@ def create_account():
 @app.route('/map', methods=["GET"])
 def get_employee_data():
     empData = Employee.query.all()
-    # oneEmp = Employee.query.get(1)
-    # print(oneEmp.address)
     empDataResult = []
     for emp in empData:
       empDataResult.append({'name': emp.employee_name, 'cell': emp.employee_cell, 'id': emp.employee_id})
@@ -89,6 +87,25 @@ def get_new_emp_data():
 def map():
   return render_template('map.html')
 
+@app.route('/maps/<id>')
+def emp_details(id):
+   emp_detail = Employee.query.get(id)
+   id = id
+   name = emp_detail.employee_name
+   delivered = emp_detail.employee_total_packages_delivered
+  #  delivered = randint(100, 500)
+   return render_template('empdetails.html', name=name, id=id, delivered=delivered)
+
+
+@app.route('/maps/<id>', methods=["POST"])
+def delete_emp(id):
+  target_emp = Employee.query.get(id)
+  target_addr = Address.query.get(id)
+  db.session.delete(target_emp)
+  db.session.delete(target_addr)
+  db.session.commit()
+  #  delivered = randint(100, 500)
+  return redirect('/maps')
 
 
 

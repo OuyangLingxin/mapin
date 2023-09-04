@@ -13,5 +13,15 @@
     "order_status": "Complete",
     "employee_id": 2,
     "warehouse_id": 2
+  },
+  {
+    "order_status": "In Progress",
+    "employee_id": 3,
+    "warehouse_id": 4
+  },
+  {
+    "order_status": "In Progress",
+    "employee_id": 3,
+    "warehouse_id": 4
   }
 ]

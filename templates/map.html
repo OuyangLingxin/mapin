@@ -15,6 +15,7 @@
   </section>
 
   <div id="grid"></div>
+  <a href="/newemployee">Add New Employee</a>
 
   <script>
     const warehouses = [
@@ -57,7 +58,6 @@
       document.querySelector('#map'), {zoom:10, center:la, mapId:'79bbee021714810b'}
       );
 
-      //Create Markers
       //Center LA Marker
       let laMarker = new google.maps.Marker({position:la, map:map});
       laMarker.addListener("click", () => {
