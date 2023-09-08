@@ -1,25 +1,50 @@
 {% extends 'base.html' %}
 {% block title %} Mapin {% endblock %}
 {%block body %}
-  <h1>Welcome to Mapin</h1>
-  <p>See how easy everything can be</p>
 
-  <form action="/" method="post">
-    <p>Sign in</p>
 
-    <label for="username">
-      <input type="text" name="email" id="email" placeholder="Email">
-    </label>
-    <br/>
-    <label for="password">
-      <input type="password" name="password" id="password" placeholder="Password">
-    </label>
-    <br/>
-    <button>Login</button>
-  </form>
-    <p>___________ or ___________ </p>
+<nav class="navbar --bs-body-bg-rgb ms-lg-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="/">SY</a>
+  </div>
+</nav>
 
-    <form action="/signup">
-      <button type="submit">Sign Up</button>
-    </form>
+<div class="fs-3 fw-normal mt-lg-3 ms-lg-3"></div>
+
+  <div class="container font-monospace">
+    <div class="row justify-content-md-center align-items-center">
+
+      <div class="col-8 ">
+        <p class="mb-3">Where Everything Made Easy</p>
+        <img src="/static/img/highway.avif" width="600px" alt="" class="h-100">
+      </div>
+
+      <div class="col-4 border border-dark-subtle shadow bg-light-subtle rounded text-center align-items-center pt-3 pb-3">
+        <form action="/" method="post">
+          <div class="form-group mt-3">
+            <label for="exampleInputEmail1" class="mb-2">Email</label>
+            <input type="email" name="email" class="form-control w-50 h-25 m-auto" id="exampleInputEmail1">
+          </div>
+
+          <br/>
+
+          <div class="form-group ">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" name="password" class="form-control w-50 h-25 m-auto" id="exampleInputPassword1">
+          </div>
+
+          <br/>
+
+          <button class="btn btn-primary mb-4" type="submit">Login</button>
+        </form>
+
+      <div class="mb-3">
+        <a class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover" href="/signup">New to the team? Sign up here!</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}

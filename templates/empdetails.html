@@ -9,7 +9,10 @@
     <li>Number of packages deliverd in total: {{delivered}} </li>
   </ul>
 
-
   <input type="submit" value="delete">
 </form>
-{% endblock %}
+
+<form action="/maps/{{id}}/edit" >
+  <input type="submit" value="edit">
+</form>
+{% endblock %}"post"
