@@ -1,18 +1,70 @@
 {% extends 'base.html' %}
 
 {% block body%}
-  <h1>Emp Details</h1>
-  <form action="/maps/{{id}}" method="POST">
-  <ul>
-    <li>{{id}}</li>
-    <li>{{name}}</li>
-    <li>Number of packages deliverd in total: {{delivered}} </li>
-  </ul>
 
-  <input type="submit" value="delete">
-</form>
+
+<nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="/">SY</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/maps">Map</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newemployee">New Employee</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  <!-- <h1>{{name}}</h1>
+  <form action="/maps/{{id}}" method="POST">
+    <ul>
+      <li>{{id}}</li>
+      <li>{{name}}</li>
+      <li>Number of packages deliverd in total: {{delivered}} </li>
+      <li><img src="{{picture}}" alt=""></li>
+    </ul>
+
+    <input type="submit" value="delete">
+  </form>
 
 <form action="/maps/{{id}}/edit" >
   <input type="submit" value="edit">
+</form> -->
+
+
+<form action="/maps/{{id}}" method="POST">
+  <div class="card mt-4 mx-auto" style="width: 18rem;">
+    {% if picture != None: %}
+      <img src="{{picture}}" class="card-img-top" alt="...">
+    {% else: %}
+      <img src="/static/img/default.svg" class="card-img-top pt-2 pb-2" alt="...">
+      {% endif%}
+    <div class="card-body">
+      <h4 class="card-title text-center">{{name}}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">EmpID: <b>{{id}}</b></li>
+      <li class="list-group-item">Total packages deliverd: <b>{{delivered}}</b></li>
+    </ul>
+    <div class="card-body row justify-content-evenly">
+      <div class="col-4">
+        <a href="/maps/{{id}}/edit" class="btn btn-info card-link col-12">Edit</a>
+      </div>
+      <div class="col-4">
+        <input type="submit" value="Delete" class="btn btn-warning card-link col-12">
+      </div>
+    </div>
+  </div>
 </form>
-{% endblock %}"post"
+
+{% endblock %}

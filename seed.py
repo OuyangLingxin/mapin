@@ -12,7 +12,8 @@ os.system("createdb mapin")
 model.connect_to_db(server.app)
 model.db.create_all()
 
-userList = RandomUser.generate_users(10, {'nat':'us'})
+userList = RandomUser.generate_users(12, {'nat':'us'})
+print(userList)
 
 with open('data/order.json') as o:
     order_data = json.loads(o.read())
@@ -23,21 +24,27 @@ with open('data/warehouse.json') as w:
 users = []
 addresses = []
 
-orders_delivered = randint(100, 500)
+# orders_delivered = randint(100, 500)
 
 for user in userList:
     name = user.get_full_name()
     cell = user.get_cell()
     email = user.get_email()
     password = user.get_password()
-    orders_delivered = orders_delivered
-    newUser = model.Employee(employee_name = name, employee_cell = cell, employee_email=email, employee_password=password, employee_total_packages_delivered=orders_delivered)
+    picture = user.get_picture()
+    total_delivered = randint(100, 1000)
+    newUser = model.Employee(employee_name = name, employee_cell = cell, employee_email=email, employee_password=password, employee_total_packages_delivered=total_delivered, employee_picture=picture)
     users.append(newUser)
 
-    coordinates = random_address.real_random_address_by_state('CA')
-    lat = coordinates["coordinates"]["lat"]
-    lng = coordinates["coordinates"]["lng"]
-    address = model.Address(lat=lat, lng=lng)
+    location = random_address.real_random_address_by_state('CA')
+    lat = location["coordinates"]["lat"]
+    lng = location["coordinates"]["lng"]
+    address1 = location["address1"]
+    address2 = location["address2"]
+    city = location["city"]
+    state = location["state"]
+    postalCode = location["postalCode"]
+    address = model.Address(lat=lat, lng=lng, address1=address1, address2=address2, city=city, state=state, postalCode=postalCode)
     addresses.append(address)
 
 orders = []

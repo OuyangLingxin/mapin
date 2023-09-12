@@ -1,10 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     __tablename__ = 'admins'
-    admin_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     admin_email = db.Column(db.String)
     admin_password = db.Column(db.String, nullable=False)
 
@@ -19,6 +20,7 @@ class Employee(db.Model):
     employee_name = db.Column(db.String)
     employee_cell = db.Column(db.String)
     employee_total_packages_delivered = db.Column(db.Integer)
+    employee_picture = db.Column(db.Text)
 
     address = db.relationship('Address', back_populates='employee')
     order = db.relationship('Order', back_populates='employee')
@@ -30,6 +32,11 @@ class Employee(db.Model):
 class Address(db.Model):
     __tablename__ = 'addresses'
     employee_id = db.Column(db.Integer, db.ForeignKey('employees.employee_id'), autoincrement=True, primary_key=True)
+    address1 = db.Column(db.Text)
+    address2= db.Column(db.Text)
+    city = db.Column(db.String)
+    state = db.Column(db.String)
+    postalCode = db.Column(db.Integer)
     lat = db.Column(db.Float)
     lng = db.Column(db.Float)
 

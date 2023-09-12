@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request, session, flash, redirect, jsonify
+from flask_bcrypt import Bcrypt
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from model import connect_to_db, db, Employee, Order, Warehouse, Address, Admin
 from jinja2 import StrictUndefined
 import googlemaps
@@ -7,6 +9,16 @@ from random import randint
 app = Flask(__name__)
 app.secret_key = 'dev'
 app.jinja_env.undefined = StrictUndefined
+bcrypt = Bcrypt(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
+
+@login_manager.user_loader
+def load_user(id):
+   return Admin.query.get(id)
+
 
 gmaps = googlemaps.Client(key='AIzaSyABVLqKXuX8k_JDyL9dWR7jIZxs_XV9fhg')
 
@@ -20,15 +32,17 @@ def login():
   email = request.form.get('email')
   password = request.form.get('password')
   user = Admin.query.filter(Admin.admin_email == email).first()
-  if email == user.admin_email and password == user.admin_password:
+  pw_hash = bcrypt.generate_password_hash(user.admin_password).decode('utf-8')
+  if bcrypt.check_password_hash(pw_hash, password):
+    login_user(user)
     return redirect('/maps')
-  else:
-    flash("Please try again")
-    return redirect('/')
+  flash('Authentication Failed, Please Try Again')
+  return redirect('/')
+
 
 @app.route('/signup')
 def signup():
-  return render_template('sign_up_form.html')
+  return render_template('signUpForm.html')
 
 @app.route('/signup', methods=["POST"])
 def create_account():
@@ -40,6 +54,7 @@ def create_account():
   return redirect('/')
 
 @app.route('/maps')
+@login_required
 def map():
   return render_template('map.html')
 
@@ -49,27 +64,56 @@ def emp_details(id):
    id = id
    name = emp_detail.employee_name
    delivered = emp_detail.employee_total_packages_delivered
-   return render_template('empdetails.html', name=name, id=id, delivered=delivered)
+   picture = emp_detail.employee_picture
+   return render_template('empDetails.html', name=name, id=id, delivered=delivered, picture=picture)
 
 @app.route('/maps/<id>/edit')
+@login_required
 def edit_emp(id):
   target_emp = Employee.query.get(id)
   name = target_emp.employee_name
   delivered = target_emp.employee_total_packages_delivered
-  return render_template('emp_edit.html', name=name, delivered=delivered, id=id)
+  cell = target_emp.employee_cell
+  email = target_emp.employee_email
+  target_addr = Address.query.get(id)
+  address1 = target_addr.address1
+  address2 = target_addr.address2
+  city = target_addr.city
+  state = target_addr.state
+  postalCode = target_addr.postalCode
+  return render_template('empEdit.html', name=name, delivered=delivered, id=id, cell=cell, email=email, address2=address2, city=city, state=state, postalCode=postalCode, address1=address1)
 
 @app.route('/maps/<id>/edit', methods=["POST"])
+@login_required
 def update_emp(id):
   target_emp = Employee.query.get(id)
+  target_emp_addr = Address.query.get(id)
   new_name = request.form.get('name')
   new_total = request.form.get('delivered')
+  new_cell = request.form.get('cell')
+  new_email = request.form.get('email')
+  new_address1 = request.form.get('address1')
+  new_address2 = request.form.get('address2')
+  new_city = request.form.get('city')
+  new_zip = request.form.get('zip')
+
   target_emp.employee_name = new_name
+  target_emp.employee_cell = new_cell
+  target_emp.employee_email = new_email
+  target_emp_addr.address1 = new_address1
+  target_emp_addr.address2 = new_address2
+  target_emp_addr.city = new_city
+  target_emp_addr.postalCode = new_zip
+
   target_emp.employee_total_packages_delivered = new_total
+
   target_emp.verified = True
+  target_emp_addr.verified = True
   db.session.commit()
   return redirect('/maps')
 
 @app.route('/maps/<id>', methods=["POST"])
+@login_required
 def delete_emp(id):
   target_emp = Employee.query.get(id)
   target_addr = Address.query.get(id)
@@ -81,41 +125,36 @@ def delete_emp(id):
 
 
 @app.route('/newemployee')
+@login_required
 def add_new_emp():
-    return render_template('newemployee.html')
+    return render_template('newEmployee.html')
 
 @app.route('/newemployee', methods=["POST"])
+@login_required
 def get_new_emp_data():
     new_emp_name = request.form.get('name')
     new_emp_cell = request.form.get('cell')
     new_emp_email = request.form.get('email')
-    new_emp_address = request.form.get('address')
+    new_emp_address = request.form.get('address1')
+    address1 = request.form.get('address1')
+    address2 = request.form.get('address2')
+    city = request.form.get('city')
+    state = request.form.get('state')
+    zip = request.form.get('zip')
     geocode_result = gmaps.geocode(f"'{new_emp_address}'")
     lat = geocode_result[0]['geometry']['location']['lat']
     lng = geocode_result[0]['geometry']['location']['lng']
     emp = Employee(employee_name = new_emp_name, employee_cell = new_emp_cell, employee_email = new_emp_email)
     db.session.add(emp)
     db.session.commit()
+
     new_emp = Employee.query.filter(Employee.employee_cell == new_emp_cell).first()
-    new_emp_addr = Address(employee_id = new_emp.employee_id, lat = lat, lng = lng)
+    new_emp_addr = Address(employee_id = new_emp.employee_id, address1=address1, address2=address2, city=city, state=state, postalCode=zip)
     db.session.add(new_emp_addr)
     db.session.commit()
     return redirect('/maps')
 
 
-
-# @app.route('/maps/<id>/edit')
-# def finish_edit_emp(id):
-#   target_emp = Employee.query.get(id)
-#   # name = target_emp.employee_name
-#   # delivered = target_emp.employee_total_packages_delivered
-#   new_name = request.form.get('name')
-#   new_total = request.form.get('delivered')
-#   target_emp.employee_name = new_name
-#   target_emp.employee_total_packages_delivered = new_total
-#   target_emp.verified = True
-#   db.session.commit()
-#   return redirect('/maps')
 
 
 
@@ -124,6 +163,7 @@ def get_new_emp_data():
 
 
 @app.route('/map', methods=["GET"])
+@login_required
 def get_employee_data():
     empData = Employee.query.all()
     empDataResult = []
@@ -138,6 +178,7 @@ def get_employee_data():
 
 
 @app.route('/employee', methods=["GET"])
+@login_required
 def get_all_employee():
     data = Employee.query.all()
     result = []
