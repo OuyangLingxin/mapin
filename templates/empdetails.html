@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
+{% block title %} Employee Details {% endblock %}
+
 {% block body%}
-
-
 <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="/">SY</a>
@@ -11,9 +11,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
+        </li> -->
         <li class="nav-item">
           <a class="nav-link" href="/maps">Map</a>
         </li>
@@ -22,33 +22,22 @@
         </li>
       </ul>
     </div>
+    {% if current_user.is_authenticated %}
+      <div class="d-inline-block">
+        <img src="/static/img/default.svg" width="50px" height="40px" class="btn" type="button" aria-expanded="false">
+        <a href="/" class="link-underline link-underline-opacity-0 link-dark">Logout</a>
+      </div>
+    {% endif %}
   </div>
 </nav>
-
-  <!-- <h1>{{name}}</h1>
-  <form action="/maps/{{id}}" method="POST">
-    <ul>
-      <li>{{id}}</li>
-      <li>{{name}}</li>
-      <li>Number of packages deliverd in total: {{delivered}} </li>
-      <li><img src="{{picture}}" alt=""></li>
-    </ul>
-
-    <input type="submit" value="delete">
-  </form>
-
-<form action="/maps/{{id}}/edit" >
-  <input type="submit" value="edit">
-</form> -->
-
 
 <form action="/maps/{{id}}" method="POST">
   <div class="card mt-4 mx-auto" style="width: 18rem;">
     {% if picture != None: %}
-      <img src="{{picture}}" class="card-img-top" alt="...">
+      <img src="{{picture}}" class="card-img-top" alt="profilePic">
     {% else: %}
-      <img src="/static/img/default.svg" class="card-img-top pt-2 pb-2" alt="...">
-      {% endif%}
+      <img src="/static/img/default.svg" class="card-img-top pt-2 pb-2" alt="profilePic">
+    {% endif%}
     <div class="card-body">
       <h4 class="card-title text-center">{{name}}</h4>
     </div>

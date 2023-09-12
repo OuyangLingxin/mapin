@@ -5,7 +5,7 @@
 <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
 <link rel="stylesheet" href="css/bootstrap.css" />
-{% block title %} Mapping {% endblock %}
+{% block title %} Mapin Location {% endblock %}
 {% endblock%}
 
 {% block body %}
@@ -17,9 +17,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
+        </li> -->
         <li class="nav-item">
           <a class="nav-link" href="/maps">Map</a>
         </li>
@@ -28,29 +28,26 @@
         </li>
       </ul>
     </div>
-
-        {% if current_user.is_authenticated %}
-        <!-- <div class="dropdown btn-sm me-5"> -->
-          <div class="d-inline-block">
-            <img src="/static/img/default.svg" width="50px" height="40px" class="btn" type="button" aria-expanded="false">
-            <a href="/" class="link-underline link-underline-opacity-0 link-dark">Logout</a>
-          </div>
-        <!-- </div> -->
-        {% endif %}
+    {% if current_user.is_authenticated %}
+      <div class="d-inline-block">
+        <img src="/static/img/default.svg" width="50px" height="40px" class="btn" type="button" aria-expanded="false">
+        <a href="/" class="link-underline link-underline-opacity-0 link-dark">Logout</a>
       </div>
+    {% endif %}
+  </div>
 </nav>
 
-  <div id="map" class="m-auto object-fit-scale border rounded mb-4" heigh="90%" ></div>
-
-    <div class="container mb-5">
+  <div id="map" class="m-auto object-fit-scale border rounded mb-4" heigh="90%" >
+  </div>
+  <div class="container mb-3">
     <div id="grid" class="row justify-content-evenly mr-2">
-
     </div>
   </div>
 
-  <div class="row col-3 mx-auto">
+  <div class="row col-3 mx-auto mb-5">
     <a class="btn btn-primary" href="/newemployee" role="button">Add New Employee</a>
   </div>
+
   <script>
     const warehouses = [
       {

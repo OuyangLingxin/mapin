@@ -1,7 +1,8 @@
 {% extends 'base.html'%}
-{% block title %} Add new emp {% endblock %}
-{% block body %}
 
+{% block title %} Add New Employee {% endblock %}
+
+{% block body %}
 <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="/">SY</a>
@@ -10,59 +11,27 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
+        </li> -->
         <li class="nav-item">
           <a class="nav-link" href="/maps">Map</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newemployee">New Employee</a>
+        </li>
       </ul>
     </div>
+    {% if current_user.is_authenticated %}
+      <div class="d-inline-block">
+        <img src="/static/img/default.svg" width="50px" height="40px" class="btn" type="button" aria-expanded="false">
+        <a href="/" class="link-underline link-underline-opacity-0 link-dark">Logout</a>
+      </div>
+    {% endif %}
   </div>
 </nav>
 
 <h5 class="col-6 mx-auto text-center mt-4 mb-3">Add New Employee Details</h5>
-
-<!-- <form action="/newemployee" method="POST" class="col-6 mx-auto align-middle">
-  <div class="row g-2 align-items-center mb-3 text-center">
-    <div class="col-auto col-3">
-      <label for="name" class="col-form-label">Name:</label>
-    </div>
-    <div class="col-auto col-9">
-      <input type="text" id="name" name="name" class="form-control" aria-describedby="name" placeholder="Jane D" required>
-    </div>
-  </div>
-  <div class="row g-3 align-items-center mb-3 text-center">
-    <div class="col-auto col-3">
-      <label for="cell" class="col-form-label">Cell:</label>
-    </div>
-    <div class="col-auto col-9">
-      <input class="form-control" type="tel" name="cell" id="cell" pattern="\([0-9]{3}\)-[0-9]{3}-[0-9]{4}" placeholder="(123)-456-7890" required>
-      <div id="telHelp" class="form-text">cell format must be followed</div>
-    </div>
-  </div>
-  <div class="row g-3 align-items-center mb-3 text-center">
-    <div class="col-auto col-3">
-      <label for="exampleFormControlInput1" class="form-label">Email:</label>
-    </div>
-    <div class="col-auto col-9">
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-    </div>
-  </div>
-  <div class="row g-3 align-items-center mb-3 text-center">
-    <div class="col-auto col-3">
-      <label for="address" class="form-label">Address:</label>
-    </div>
-    <div class="col-auto col-9">
-      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="599 Wrangler Lane, Los Angeles, CA 90006">
-    </div>
-  </div>
-
-
-  <div class="col text-center mt-5">
-    <button class="btn btn-primary align-self-center" type="submit">Add New Driver</button>
-  </div>
-</form> -->
 
 <form action="/newemployee" method="POST" class="row g-3 col-6 mx-auto">
   <div class="col-12">
