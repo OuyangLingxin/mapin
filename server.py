@@ -5,6 +5,9 @@ from model import connect_to_db, db, Employee, Order, Warehouse, Address, Admin
 from jinja2 import StrictUndefined
 import googlemaps
 from random import randint
+import os
+
+api_key = os.environ['api_key']
 
 app = Flask(__name__)
 app.secret_key = 'dev'
@@ -20,7 +23,7 @@ def load_user(id):
    return Admin.query.get(id)
 
 
-gmaps = googlemaps.Client(key='AIzaSyABVLqKXuX8k_JDyL9dWR7jIZxs_XV9fhg')
+gmaps = googlemaps.Client(key=api_key)
 
 
 @app.route('/')
@@ -37,6 +40,11 @@ def login():
     login_user(user)
     return redirect('/maps')
   flash('Authentication Failed, Please Try Again')
+  return redirect('/')
+
+@app.route('/logout')
+def logout():
+  logout_user()
   return redirect('/')
 
 
@@ -56,7 +64,7 @@ def create_account():
 @app.route('/maps')
 @login_required
 def map():
-  return render_template('map.html')
+  return render_template('map.html', api_key=api_key)
 
 @app.route('/maps/<id>')
 def emp_details(id):
@@ -135,13 +143,13 @@ def get_new_emp_data():
     new_emp_name = request.form.get('name')
     new_emp_cell = request.form.get('cell')
     new_emp_email = request.form.get('email')
-    new_emp_address = request.form.get('address1')
+    # new_emp_address = request.form.get('address1')
     address1 = request.form.get('address1')
     address2 = request.form.get('address2')
     city = request.form.get('city')
     state = request.form.get('state')
     zip = request.form.get('zip')
-    geocode_result = gmaps.geocode(f"'{new_emp_address}'")
+    geocode_result = gmaps.geocode(f"'{address1, city, state, zip}'")
     lat = geocode_result[0]['geometry']['location']['lat']
     lng = geocode_result[0]['geometry']['location']['lng']
     emp = Employee(employee_name = new_emp_name, employee_cell = new_emp_cell, employee_email = new_emp_email)
@@ -149,7 +157,7 @@ def get_new_emp_data():
     db.session.commit()
 
     new_emp = Employee.query.filter(Employee.employee_cell == new_emp_cell).first()
-    new_emp_addr = Address(employee_id = new_emp.employee_id, address1=address1, address2=address2, city=city, state=state, postalCode=zip)
+    new_emp_addr = Address(employee_id = new_emp.employee_id, address1=address1, address2=address2, city=city, state=state, postalCode=zip, lat=lat, lng=lng)
     db.session.add(new_emp_addr)
     db.session.commit()
     return redirect('/maps')
