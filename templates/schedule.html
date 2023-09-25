@@ -1,0 +1,124 @@
+{% extends 'base.html' %} {% block title %} Schedule {% endblock %}
+
+{% block body %}
+  <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold" href="/maps">SY</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="/maps">Distribution</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/newemployee">Employee</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/schedule">Schedule</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/chart">Statistics</a>
+          </li>
+        </ul>
+      </div>
+      {% if current_user.is_authenticated %}
+      <div class="d-inline-block">
+        <img
+          src="/static/img/default.svg"
+          width="50px"
+          height="40px"
+          class="btn"
+          type="button"
+          aria-expanded="false"
+        />
+        <a
+          href="/logout"
+          class="link-underline link-underline-opacity-0 link-dark"
+          >Logout</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </nav>
+  <h1 class="text-center font-monospace mt-4 mb-2">Schedule Setup Chat</h1>
+
+  <div
+    id="landing"
+    class="position-absolute top-50 start-50 translate-middle mb-10"
+  >
+    <input type="text" id="username" placeholder="Employee ID" />
+    <button id="submitBTN">JOIN</button>
+  </div>
+
+  <div id="chat" style="visibility: hidden" class="mb-5">
+    <ul
+      id="chat-messages"
+      style="
+        display: block;
+        background-color: white;
+        width: 60%;
+        height: 470px;
+        overflow-y: scroll;
+      "
+      class="mx-auto"
+    ></ul>
+    <input
+      type="text"
+      id="message"
+      placeholder="Enter a Message"
+      class="mt-1 position-absolute top-95 start-50 translate-middle"
+      style="width: 60%"
+    />
+  </div>
+
+  <script>
+    const socket = io({ autoConnect: false });
+
+    document
+      .getElementById("submitBTN")
+      .addEventListener("click", function () {
+        let username = document.getElementById("username").value;
+
+        socket.connect();
+
+        socket.on("connect", function () {
+          socket.emit("user_join", username);
+        });
+
+        document.getElementById("chat").style.visibility = "visible";
+        document.getElementById("landing").style.visibility = "hidden";
+      });
+
+    document
+      .getElementById("message")
+      .addEventListener("keyup", function (event) {
+        console.log(event.key);
+        if (event.key == "Enter") {
+          let message = document.getElementById("message").value;
+          socket.emit("new_message", message);
+          document.getElementById("message").value = "";
+        }
+      });
+    socket.on("chat", function (data) {
+      let ul = document.getElementById("chat-messages");
+      let li = document.createElement("li");
+      li.style.listStyle = "none";
+      li.appendChild(
+        document.createTextNode(data["username"] + ": " + data["message"])
+      );
+      ul.appendChild(li);
+      ul.scrolltop = ul.scrollHeight;
+    });
+  </script>
+
+{% endblock %}

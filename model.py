@@ -3,6 +3,7 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
+
 class Admin(db.Model, UserMixin):
     __tablename__ = 'admins'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -11,6 +12,7 @@ class Admin(db.Model, UserMixin):
 
     def __repr__(self):
         return f"<Admin admin_id={self.admin_id} admin_email={self.admin_email}>"
+
 
 class Employee(db.Model):
     __tablename__ = 'employees'
@@ -21,6 +23,7 @@ class Employee(db.Model):
     employee_cell = db.Column(db.String)
     employee_total_packages_delivered = db.Column(db.Integer)
     employee_picture = db.Column(db.Text)
+    employee_days_worked = db.Column(db.Integer)
 
     address = db.relationship('Address', back_populates='employee')
     order = db.relationship('Order', back_populates='employee')
@@ -29,11 +32,13 @@ class Employee(db.Model):
     def __repr__(self):
         return f"<Employee employee_id={self.employee_id} employee_name={self.employee_name}>"
 
+
 class Address(db.Model):
     __tablename__ = 'addresses'
-    employee_id = db.Column(db.Integer, db.ForeignKey('employees.employee_id'), autoincrement=True, primary_key=True)
+    employee_id = db.Column(db.Integer, db.ForeignKey(
+        'employees.employee_id'), autoincrement=True, primary_key=True)
     address1 = db.Column(db.Text)
-    address2= db.Column(db.Text)
+    address2 = db.Column(db.Text)
     city = db.Column(db.String)
     state = db.Column(db.String)
     postalCode = db.Column(db.Integer)
@@ -44,6 +49,7 @@ class Address(db.Model):
 
     def __repr__(self):
         return f"<Address employee_id={self.employee_id} lat={self.lat} lng={self.lng}>"
+
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -57,6 +63,7 @@ class Order(db.Model):
 
     def __repr__(self):
         return f"<Order order_id={self.order_id} delivery_address={self.delivery_address}>"
+
 
 class Warehouse(db.Model):
     __tablename__ = 'warehouses'
@@ -75,10 +82,6 @@ class Warehouse(db.Model):
         return f"<Warehouse warehouse_id={self.warehouse_id} warehouse_location={self.warehouse_location}>"
 
 
-
-
-
-
 def connect_to_db(flask_app, db_uri="postgresql:///mapin", echo=True):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
     flask_app.config["SQLALCHEMY_ECHO"] = echo
@@ -88,6 +91,7 @@ def connect_to_db(flask_app, db_uri="postgresql:///mapin", echo=True):
     db.init_app(flask_app)
 
     print("Connected to the db!")
+
 
 if __name__ == "__main__":
     from server import app

@@ -12,7 +12,7 @@ os.system("createdb mapin")
 model.connect_to_db(server.app)
 model.db.create_all()
 
-userList = RandomUser.generate_users(12, {'nat':'us'})
+userList = RandomUser.generate_users(12, {'nat': 'us'})
 print(userList)
 
 with open('data/order.json') as o:
@@ -24,7 +24,6 @@ with open('data/warehouse.json') as w:
 users = []
 addresses = []
 
-# orders_delivered = randint(100, 500)
 
 for user in userList:
     name = user.get_full_name()
@@ -33,7 +32,9 @@ for user in userList:
     password = user.get_password()
     picture = user.get_picture()
     total_delivered = randint(100, 1000)
-    newUser = model.Employee(employee_name = name, employee_cell = cell, employee_email=email, employee_password=password, employee_total_packages_delivered=total_delivered, employee_picture=picture)
+    days_worked = randint(1, 20)
+    newUser = model.Employee(employee_name=name, employee_cell=cell, employee_email=email, employee_password=password,
+                             employee_total_packages_delivered=total_delivered, employee_picture=picture, employee_days_worked=days_worked)
     users.append(newUser)
 
     location = random_address.real_random_address_by_state('CA')
@@ -44,7 +45,8 @@ for user in userList:
     city = location["city"]
     state = location["state"]
     postalCode = location["postalCode"]
-    address = model.Address(lat=lat, lng=lng, address1=address1, address2=address2, city=city, state=state, postalCode=postalCode)
+    address = model.Address(lat=lat, lng=lng, address1=address1,
+                            address2=address2, city=city, state=state, postalCode=postalCode)
     addresses.append(address)
 
 orders = []
@@ -52,7 +54,8 @@ for order in order_data:
     order_status = order["order_status"]
     employee_id = order["employee_id"]
     warehouse_id = order["warehouse_id"]
-    order = model.Order(order_status=order_status, employee_id=employee_id, warehouse_id=warehouse_id)
+    order = model.Order(order_status=order_status,
+                        employee_id=employee_id, warehouse_id=warehouse_id)
     orders.append(order)
 
 warehouses = []
@@ -61,22 +64,13 @@ for warehouse in warehouse_data:
     warehouse_location = warehouse["warehouse_location"]
     warehouse_lat = warehouse['coord']['lat']
     warehouse_lng = warehouse['coord']['lng']
-    warehouse = model.Warehouse(warehouse_name=warehouse_name, warehouse_location=warehouse_location, warehouse_lat=warehouse_lat, warehouse_lng=warehouse_lng)
+    warehouse = model.Warehouse(warehouse_name=warehouse_name, warehouse_location=warehouse_location,
+                                warehouse_lat=warehouse_lat, warehouse_lng=warehouse_lng)
     warehouses.append(warehouse)
 
 
-
-
-
-
-
-
 model.db.session.add_all(users)
-# model.db.session.commit()
 model.db.session.add_all(addresses)
-# model.db.session.commit()
 model.db.session.add_all(orders)
-# model.db.session.commit()
 model.db.session.add_all(warehouses)
 model.db.session.commit()
-

@@ -1,8 +1,5 @@
-{% extends 'base.html'%} {% block title %} Add New Employee {% endblock %}
-<link rel="stylesheet" href="/static/css/newEmp.css">
-
-{%
-block body %}
+{% extends 'base.html' %} {% block title %} Edit Employee Information {%
+endblock %} {% block body %}
 <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="/maps">SY</a>
@@ -19,6 +16,9 @@ block body %}
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li> -->
         <li class="nav-item">
           <a class="nav-link" href="/maps">Distribution</a>
         </li>
@@ -29,7 +29,7 @@ block body %}
           <a class="nav-link" href="/schedule">Schedule</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/chart">Statistics</a>
+          <a class="nav-link" href="/newemployee">Statistics</a>
         </li>
       </ul>
     </div>
@@ -53,26 +53,45 @@ block body %}
   </div>
 </nav>
 
-<h5 class="col-6 mx-auto text-center mt-4 mb-3">Add New Employee Details</h5>
+<div class="text-center mx-auto mb-4 mt-4 font-monospace">
+  <h3>Edit Employee Details</h3>
+</div>
 
-<form action="/newemployee" method="POST" class="row g-3 col-6 mx-auto">
-  <div class="col-12">
-    <label for="inputEmail4" class="form-label">Name</label>
+<form action="/maps/{{id}}/edit" method="POST" class="row g-3 col-6 mx-auto mb-5">
+  <div class="col-6">
+    <label for="id" class="form-label">ID</label>
+    <input
+      type="number"
+      name="id"
+      id="id"
+      value="{{id}}"
+      disabled
+      class="form-control"
+      aria-describedby="name"
+      required
+    />
+  </div>
+  <div class="col-6">
+    <label for="name" class="form-label">Name</label>
     <input
       type="text"
-      class="form-control"
-      id="inputEmail4"
       name="name"
+      id="name"
+      value="{{name}}"
+      class="form-control"
+      aria-describedby="name"
       required
     />
   </div>
   <div class="col-6">
     <label for="inputPassword4" class="form-label">Cell</label>
     <input
-      type="text"
       class="form-control"
-      id="inputPassword4"
+      type="tel"
       name="cell"
+      id="cell"
+      pattern="\([0-9]{3}\)-[0-9]{3}-[0-9]{4}"
+      value="{{cell}}"
       required
     />
   </div>
@@ -82,10 +101,11 @@ block body %}
     >
     <input
       type="number"
+      name="delivered"
+      value="{{delivered}}"
       class="form-control"
-      id="inputPassword4"
-      name="packages"
-      value="0"
+      aria-describedby="name"
+      required
     />
   </div>
   <div class="col-12">
@@ -93,10 +113,9 @@ block body %}
     <input
       type="text"
       class="form-control"
-      id="inputAddress"
-      placeholder="1234 Main St"
+      id="exampleFormControlInput1"
+      value="{{address1}}"
       name="address1"
-      required
     />
   </div>
   <div class="col-12">
@@ -105,7 +124,7 @@ block body %}
       type="text"
       class="form-control"
       id="inputAddress2"
-      placeholder="Apartment, studio, or floor"
+      value="{{address2}}"
       name="address2"
     />
   </div>
@@ -117,6 +136,7 @@ block body %}
       id="inputCity"
       name="city"
       required
+      value="{{city}}"
     />
   </div>
   <div class="col-md-4">
@@ -125,7 +145,6 @@ block body %}
       type="text"
       class="form-control"
       id="inputAddress2"
-      placeholder="Apartment, studio, or floor"
       name="address2"
       value="CA"
       required
@@ -139,14 +158,14 @@ block body %}
       id="inputZip"
       name="zip"
       required
+      value="{{postalCode}}"
     />
   </div>
-  <div class="col mt-3 mx-auto mb-5">
+  <div class="col mt-3 mx-auto">
     <button type="submit" class="btn btn-primary col-12">
-      Add New Employee
+      Update Employee Details
     </button>
   </div>
 </form>
 
-<script ></script>
-{% endblock%}
+{% endblock %}

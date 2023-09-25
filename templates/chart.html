@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %} Delivery Rates {% endblock %}
+
+{%
+block body %}
+<nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="/maps">SY</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/maps">Distribution</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newemployee">Employee</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/schedule">Schedule</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/chart">Statistics</a>
+        </li>
+      </ul>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="d-inline-block">
+      <img
+        src="/static/img/default.svg"
+        width="50px"
+        height="40px"
+        class="btn"
+        type="button"
+        aria-expanded="false"
+      />
+      <a
+        href="/logout"
+        class="link-underline link-underline-opacity-0 link-dark"
+        >Logout</a
+      >
+    </div>
+    {% endif %}
+  </div>
+</nav>
+
+<div class="container text-center mb-5">
+  <div class="row">
+    <div class="chartBox mt-5 col-9">
+      <canvas id="bar-chart"></canvas>
+    </div>
+    <div class="selectBox col-3 align-self-center">
+      <p>Select employee from dropdown to compare to average:</p>
+      <select name="names" id="names" class="bg-warning form-select">
+        {% for i in user: %}
+        <option value="{{i.employee_name}}">{{i.employee_name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>
+
+<script>
+  fetch("/employee")
+    .then((response) => response.json())
+    .then((data) => {
+      let labels = [];
+      let packages = [];
+      let name_package = {};
+      for (let i of data) {
+        labels.push(`${i.id} - ${i.name}`);
+        packages.push(i.packages_delivered);
+        name_package[i.name] = i.packages_delivered;
+      }
+      let total = 0;
+      for (let i of packages) {
+        total += i;
+      }
+      let abgArr = [];
+      let average = total / labels.length;
+      let i = 0;
+      while (i < labels.length) {
+        abgArr.push(average);
+        i++;
+      }
+      let myChart = new Chart(document.querySelector("#bar-chart"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Packages Delivered By Drivers",
+              data: packages,
+            },
+            {
+              label: "Average Delivery Rate",
+              data: abgArr,
+            },
+          ],
+        },
+      });
+      const names = document.getElementById("names");
+      names.addEventListener("change", chartSelect);
+      function chartSelect() {
+        myChart.destroy();
+        myChart = new Chart(document.querySelector("#bar-chart"), {
+          type: "bar",
+          data: {
+            labels: [`${names.value}`],
+            datasets: [
+              {
+                label: "Packages Delivered By Drivers",
+                data: [`${name_package[names.value]}`],
+              },
+              {
+                label: "Average Delivery Rate",
+                data: abgArr,
+              },
+            ],
+          },
+        });
+      }
+    });
+</script>
+
+{% endblock %}
