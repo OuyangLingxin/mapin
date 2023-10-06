@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block title %} Schedule {% endblock %}
+{% extends 'base.html' %}
+
+{% block title %} Schedule {% endblock %}
 
 {% block body %}
   <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
@@ -50,14 +52,15 @@
       {% endif %}
     </div>
   </nav>
-  <h1 class="text-center font-monospace mt-4 mb-2">Schedule Setup Chat</h1>
+  <h1 class="text-center font-monospace mt-4 mb-4">Schedule Setup Chanel</h1>
+
 
   <div
     id="landing"
-    class="position-absolute top-50 start-50 translate-middle mb-10"
-  >
-    <input type="text" id="username" placeholder="Employee ID" />
-    <button id="submitBTN">JOIN</button>
+    class="position-absolute top-50 start-50 translate-middle mb-10 w-50 h-50"  >
+    <img src="/static/img/bgpic.jpg" class="rounded position-absolute " width="730px" height="400px">
+    <input type="text" id="username" placeholder="Employee ID" class=" text-center form-outline w-75 position-absolute position-absolute top-50 start-0 translate-middle-y"/>
+    <button id="submitBTN" class="form-outline  position-absolute top-50 end-0 translate-middle-y"><b>JOIN</b></button>
   </div>
 
   <div id="chat" style="visibility: hidden" class="mb-5">
@@ -80,7 +83,6 @@
       style="width: 60%"
     />
   </div>
-
   <script>
     const socket = io({ autoConnect: false });
 

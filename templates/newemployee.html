@@ -1,8 +1,19 @@
-{% extends 'base.html'%} {% block title %} Add New Employee {% endblock %}
-<link rel="stylesheet" href="/static/css/newEmp.css">
+{% extends 'base.html'%}
 
-{%
-block body %}
+{% block title %} Add New Employee {% endblock %}
+
+{% block style%}
+<style>
+  body{
+  background: url("/static/img/hands.jpg") no-repeat center ;
+  background-size: 550px 430px;
+  background-repeat: no-repeat;
+  background-position: 30%;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
 <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="/maps">SY</a>
@@ -53,8 +64,7 @@ block body %}
   </div>
 </nav>
 
-<h5 class="col-6 mx-auto text-center mt-4 mb-3">Add New Employee Details</h5>
-
+<h3 class="col-6 mx-auto text-center mt-5 mb-3 font-monospace">Add New Employee Details</h3>
 <form action="/newemployee" method="POST" class="row g-3 col-6 mx-auto">
   <div class="col-12">
     <label for="inputEmail4" class="form-label">Name</label>

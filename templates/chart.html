@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
+
 {% block title %} Delivery Rates {% endblock %}
 
-{%
-block body %}
+{% block body %}
 <nav class="navbar navbar-expand-lg --bs-body-bg-rgb ms-lg-4">
   <div class="container-fluid">
     <a class="navbar-brand fw-bold" href="/maps">SY</a>
@@ -59,7 +59,7 @@ block body %}
       <canvas id="bar-chart"></canvas>
     </div>
     <div class="selectBox col-3 align-self-center">
-      <p>Select employee from dropdown to compare to average:</p>
+      <p>Select employee from dropdown for individual lookup:</p>
       <select name="names" id="names" class="bg-warning form-select">
         {% for i in user: %}
         <option value="{{i.employee_name}}">{{i.employee_name}}</option>
